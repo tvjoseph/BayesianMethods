@@ -1,0 +1,39 @@
+---
+title: "JMJPFU_Baysian"
+output: html_notebook
+---
+
+# JMJPFU - Lord Bless this venture
+## 12-Feb-2017
+
+This notebook is to practice various methods in Bayesian Inference with R.
+
+This is the overall process for the Bayesian Statistics Notebook.
+
+### Chapter 1 : Introduction to Bayesian Thinking 
+### Page : 19
+
+Learning about heavy proportion of sleepers
+
+### Using Discrete Prior
+
+First let us take some values which indicate our beliefs in the values of P which is the proportion of students who get adequate sleep. We also assign some weights to these proportions which when normalised becomes the prior
+
+```{r}
+# Getting the list of proportions which we believe in
+
+p <- seq(0.05,0.95,by = 0.1)
+
+# Setting the weights
+
+prior <- c(1,5.2,8,7.2,4.6,2.1,0.7,0.1,0,0)
+
+# Normalizing
+
+prior <- prior/sum(prior)
+
+# Plotting the same
+
+plot(p,prior,type = "h",ylab = "Prior Probability")
+```
+
