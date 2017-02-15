@@ -71,3 +71,6 @@ sum(theta * apply(y,2,mean)/sum(apply(y,2,mean)))
 
 ```
 
+# Tomorrow
+
+1. Will continue further with more examples
