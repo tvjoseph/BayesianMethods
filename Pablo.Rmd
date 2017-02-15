@@ -1,0 +1,73 @@
+---
+title: "JMJPFU-Prablo"
+output: html_notebook
+---
+
+# JMJPFU
+## 15-Feb-2017
+
+This notebook is to demonstrate the Bayesian exercises as listed in Lecture PDF
+
+
+### Example 1 : Three coin simulation
+
+This is a simulation example to study the simulation test of 3 coin flipping
+
+```{r}
+
+# Defining a uniform prior for the three coins
+coinPrior <- rep(1/3,3)
+
+# Defining the theta value - This indicates the probability of heads of each coin
+
+theta <- c(0.25,0.5,0.75)
+
+# Defining the simulations
+
+sim <- 100000
+
+y <- rep(0,3*sim) # Defining a large vector of 0's
+
+dim(y) <- c(sim,3)
+
+# Defining a monte Carlo simulation
+
+for (i in 1:sim){
+  # In the first step we are sampling one coin from the list of 3 with equal probability of 1/3
+  ind <- sample(c(1,2,3),size=1,prob=coinPrior,replace = TRUE)
+  # In this step we are taking one observation, with size 1 with a probability equal to the index which we earlier sampled
+  y.new <- rbinom(1,1,prob=theta[ind])
+  
+  y[i,ind] <- y.new
+  
+}
+
+# Averaging each class and normalizing
+
+apply(y,2,mean)/sum(apply(y,2,mean))
+
+```
+
+What we are doing above is taking a sample from a probability distribution and then taking a binomial distribution according to the theta we sampled . The exercise is simulated for a large number of times. Finally what we get is the posterior probability of heads for each of the coins
+
+The estimated standard error of the monte carlo simulation is as follows
+
+```{r}
+thetaPost <- apply(y,2,mean)/sum(apply(y,2,mean))
+
+V <- thetaPost * (1-thetaPost)/sim
+
+sqrt(V)
+```
+
+### Calculating the Posterior Predictive Distribution
+
+To find out the probability that the next flip will be head we have to multiply the posterior probability with the prior probability and sum over all the values of theta
+
+= (0.25 * 0.167 + 0.50 * 0.33 + 0.75 * 0.499)
+
+```{r}
+sum(theta * apply(y,2,mean)/sum(apply(y,2,mean)))
+
+```
+
