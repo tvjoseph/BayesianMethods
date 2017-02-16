@@ -44,7 +44,7 @@ for (i in 1:sim){
 
 # Averaging each class and normalizing
 
-apply(y,2,mean)/sum(apply(y,2,mean))
+prior <- apply(y,2,mean)/sum(apply(y,2,mean))
 
 ```
 
@@ -71,6 +71,93 @@ sum(theta * apply(y,2,mean)/sum(apply(y,2,mean)))
 
 ```
 
-# Tomorrow
+# JMJPFU
+### 16-Feb-2017
 
-1. Will continue further with more examples
+
+Sequential learning : If we obtain data y1 and find the posterior with data y1 and obtain new data y2 we will find the new posterior with prior as the posterior for data y1
+
+"Todays posterior is tomorrow prior"
+
+### Example 2 : New data y2
+
+Let us take an example that the new data y2 = 0 ie it comes up tails. How is our beliefs revised now
+
+Below is a function to find out the likelihood for a binomial case
+
+```{r}
+likeMaker <- function(theta,y){
+  
+  like = (theta^y) * ((1-theta)^(1-y))
+  
+  return(like)
+  
+}
+
+
+```
+
+
+```{r}
+likeMaker(0.25,0)
+```
+
+To run the above example let us make a small function 
+
+```{r}
+
+postMaker <- function(prior,theta,data){
+  # prior is a vector of priors
+  # Theta is another vector of bias of the coin
+  # Data is the y value you want to observe
+  
+  # First creating a data frame for loading the values in the table
+  postDf <- data.frame(matrix(nrow=length(prior),ncol=5))
+  # Creting the names
+  
+  names(postDf) <- c("Theta","Prior","Likelihood","bayesNum","Posterior")
+  
+  # Now loading values in the dataframe
+  
+  for(i in 1:nrow(postDf)){ # Iterating over the rows of the DF
+    
+    
+      
+       postDf[i,1] <- theta[i] # First column for the theta value
+       postDf[i,2] <- prior[i] # Second column for prior
+       postDf[i,3] <- likeMaker(theta[i],data) # likelihood stored in the third column
+       postDf[i,4] <-  postDf[i,2] *  postDf[i,3] # Calcualting the numerator of Bayes equation
+    
+    
+    
+  }# End of row iteration
+  
+  normalizer <- sum(postDf[,4]) # This is the sum of the numerator of bayes equation
+  
+  postDf[,5] <- postDf[,4]/normalizer # This si the posterior
+  
+  return(postDf)
+  
+  
+} # End of the function
+
+```
+
+
+Let us try out the above function
+
+```{r}
+theta <- theta # Line 23 above
+prior <- prior # line 47 above
+
+results <- postMaker(prior,theta,1) # Creting the data frame as above
+
+prior <- results$Posterior
+
+results1 <- postMaker(prior,theta,1) # Updated results after the above
+
+```
+
+Thank you Lord
+
+Now once the above function is made, we will experiment further with more examples.
